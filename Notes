@@ -27,4 +27,29 @@ int main() {
 		else
 			cout << "암호가 틀립니다~~" << endl;
 	}
+
+}
+
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+int main() {
+	cout << "5명의 이름을';'로 구분하여 입력하시오";
+	char name[100];
+	char temp[100];
+	int size = 0;
+	cin.getline(name, 100, ';');
+	cout << "1:" << name<<'\n';
+	cin.getline(name, 100, ';');
+	cout << "2:" << name<<'\n';
+	cin.getline(name, 100, ';');;
+	cout << "3:" << name<<'\n';
+	cin.getline(name, 100, ';');;
+	cout << "4:" << name<<'\n';
+	cin.getline(name, 100, ';');;
+	cout << "5:" << name<<'\n';
+	cout << "가장 큰 이름은:" << name;
+	if(size<strlen)
+
 }
