@@ -1,0 +1,105 @@
+-캡슐화
+객체의 본질적인 특성
+객체를 캡슐로 싸서 그 내부를 보호하고 볼 수 없게 함
+-클래스
+객체를 만들어내기 위해 정의된 설계도,틀
+클래스는 객체 X
+클래스는 선언부와 구현부로 있다.
+이유- 클래스를 다른 파일에서 활용하기 위함
+
+
+-객체
+객체는 생성돌 떄 클래스의 모양을 그대로 가지고 탄생
+실체라고도 부름.
+좋은 예시)붕어빵 틀
+
+-생성자
+객체가 생성되는 시점에서 자동으로 호출도는ㄴ 멤버 함수
+클래스 이름과 도일한 멤버 함수
+목적- 객체가 필요한 초기화를 위해
+중복이 가능하다.
+선언되어 있지 않으면 기본 생성자 자동으로 생성
+기본 생성자란? 클래스에 생성자가 하나도 선언디어 있지 않은 경우, 컴파일러가 대신 삽입해주는 생성자(디폴트 생성자)
+#include <iostream>
+using namespace std;
+
+class Rectangle {
+public:
+	int width;
+	int height;
+	Rectangle();
+	Rectangle(int w, int h);
+	Rectangle(int length);
+	bool isSquare();
+};
+Rectangle::Rectangle() {
+	width = height = 1;
+}
+Rectangle::Rectangle(int w, int h) {
+	width = w; height = h;
+}
+Rectangle::Rectangle(int length) {
+	width = height = length;
+}
+bool Rectangle::isSquare() {
+	if (width == height)return true;
+	else return false;
+
+}
+int main() {
+	Rectangle rect1;
+	Rectangle rect2(3,5);
+	Rectangle rect3(3);
+
+	if (rect1.isSquare()) cout << "rect1은 정사각형이다." << endl;
+	if (rect2.isSquare()) cout << "rect2은 정사각형이다." << endl;
+	if (rect3.isSquare()) cout << "rect3은 정사각형이다." << endl;
+}
+
+
+-소멸자
+객체가 소멸되는 시점에서 자동으로 호출되는 함수
+목적: 객체가 사라질때 마무리 작업을 위함
+클래스 이름 앞에 ~를 붙인다.
+중복 불가
+리턴 타입이 없음
+객체 생성 순서는 프로그램에 선언된 순서로생서 하고 객체 소멸 순서는 전역 객체가 생성된 순서의 역순으로 소멸
+
+
+전역 객체 생성 -> 지역 객체 생성 ->지역 객체 생성 -> 지역 객체 소멸 ->지역 객체 소멸 ->전역 객체 생성
+반지름 1000원 생성->반지름2000원 생성->반지름1원 생성->반지름 1원 소멸-> 반지름 2000원 소멸 - >반지름 1000원 소멸
+
+
+-오버헤드:
+작은 크기의 함수를 호출하면, 함수 실행 시간에 비해, 호출을 위해 소용된는 부가적인 시간
+
+이 오버헤드를 해결하기 위해서는 인라인 함수 필요
+-인라인 함수
+:매크로와 유사하며 함수 호출에 따른 오버헤드 존재하지 않아 프로그램의 실행 속도 개선.
+단점-코드의 삽입으로 컴파일된 전체 코드 크기 증가
+
+
+
+-C++구조체
+상속,멤버,접근 지정등 모든 것이 클래스와 등일이나 구조체의 디폴트 접근 지정(public)과 클래스의 디폴트 접근 지정(private)은 다름
+C++에서 구조체를 수용한 이유는  C언어와의 호환성 때문.
+
+
+-클래스를 헤더 파일가 cpp 파일로 분리하여 작성하는 이유는 클래스의 재사용 때문.
+클래스 선언부 (헤더 파일에 저장)
+클래스 구현부(cpp파일에 저장)
+main 함수 (cpp 파일에 분산 저장)
+
+
+#ifndef,#endif- 이 둘로 여러 번 include  해도 문제 없게 하기 위함
+
+
+연습문제 11번
+다음 코드에서 Box 클래스의 선언부와 구현부를 Box.h ,Box.cpp 파일로 분리하고 main() 함수 부분을 main.cpp로 분리하여 전체 프로그램을 완성하여라.
+
+
+
+156pg.12번 
+
+
+
