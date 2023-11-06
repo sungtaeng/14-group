@@ -1,0 +1,117 @@
+4주
+친구?
+내 가족의 일원은 아니지만 내 가족과 동일한 권한을 가진 일원으로 인정받은 사람
+
+프렌드 함수
+클래스의 멤버 함수가 아닌 외부 함수
+필요성:클래스의 멤버로 선언하기에는 무리가 있고, 클래스의 모든 멤버를 자유
+롭게 접근할 수 있는 일부 외부 함수 작성 시
+
+ 프렌드 함수가 되는 3 가지
+◼ 전역 함수 : 클래스 외부에 선언된 전역 함수
+◼ 다른 클래스의 멤버 함수 : 다른 클래스의 특정 멤버 함수
+◼ 다른 클래스 전체 : 다른 클래스의 모든 멤버 함수
+
+연산자 중복 - 높은 프로그램 가독성을 위해
+
+정수 더하기 
+int a=2, b=3, c;
+c = a + b; // + 결과 5. 정수가 피연산자일 때 2와 3을 더하기
+문자열 합치기
+string a="C", c;
+c = a + "++“; // + 결과 “C++". 문자열이 피연산자일 때 두 개의 문자열 합치기
+색 섞기
+Color a(BLUE), b(RED), c;
+c = a + b; // c = VIOLET. a, b의 두 색을 섞은 새로운 Color 객체 c
+배열 합치기
+SortedArray a(2,5,9), b(3,7,10), c;
+c = a + b; // c = {2,3,5,7,9,10}. 정렬된 두 배열을 결합한(merge) 새로운 배열 생성
+
+
+연산자 함수 구현 방벙
+2.클래스의 멤버 함수로 구현
+2.외부 함수로 구현하고 클래스에 프렌드 함수로 선언.
+리턴 타입-operator
+
+단항 연산자 
+피연산자가 하나 뿐인 연산자
+종류 -전위 연산자,후위 연산자
+
+전위 연산자-
+
+
+#include <iostream>
+using namespace std;
+class Power {
+int kick;
+int punch;
+public:
+Power(int kick=0, int punch=0) {
+this->kick = kick; this->punch = punch;
+}
+void show();
+Power& operator++ (); // 전위 ++ 연산자 함수 선언
+};
+void Power::show() {
+cout << "kick=" << kick << ',' << "punch=" << punch << endl;
+}
+Power& Power::operator++() {
+kick++;
+punch++;
+return *this; // 변경된 객체 자신(객체 a)의 참조 리턴
+}
+
+int main() {
+Power a(3,5), b;
+a.show();
+b.show();
+b = ++a; // 전위 ++ 연산자 사용
+a.show();
+b.show();
+}
+
+실행 결과 
+kick=3,punch=5
+kick=0,punch=0
+kick=4,punch=6
+kick=4,punch=6
+
+
+후위 연산자 - 
+##include <iostream>
+using namespace std;
+class Power {
+int kick;
+int punch;
+public:
+Power(int kick=0, int punch=0) {
+this->kick = kick; this->punch = punch;
+}
+void show();
+Power operator++ (int x); // 후위 ++ 연산자 함수 선언
+};
+void Power::show() {
+cout << "kick=" << kick << ','
+<< "punch=" << punch << endl;
+}
+Power Power::operator++(int x) {
+Power tmp = *this; // 증가 이전 객체 상태를 저장
+kick++;
+punch++;
+return tmp; // 증가 이전 객체 상태 리턴
+}
+
+int main() {
+Power a(3,5), b;
+a.show();
+b.show();
+b = a++; // 후위 ++ 연산자 사용
+a.show(); // a의 파워는 1 증가됨
+b.show(); // b는 a가 증가되기 이전 상태를 가짐
+}
+
+실행 결과 
+kick=3,punch=5
+kick=0,punch=0
+kick=4,punch=6
+kick=3,punch=5
