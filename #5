@@ -1,0 +1,108 @@
+8장
+
+C++에서 상속 - 객체 사이에는 상속 관계 없음
+기본 클래스 - 상속해주는 클래스(부모 클래스)
+파생 클래스 - 상속받는 클래스(자식 클래스)
+-다중 상속을 통한 클래스의 재활용성 높임
+
+상속의 목적 및 장점
+1.간결한 클래스 작성
+2.클래스 간의 계층적 분류 및 관리의 용이함
+3.클래스 재사용과 확장을 통한 소프트웨어 생산성 향상
+
+상속관계 EX)
+
+자동차라는 베이스 클래스의 파생 클래스는 슈퍼카이다.
+학생의 기본 클래스의 파생 클래스는 대학원생,학부생이다.
+도형의 기본 클래스의 파생 클래스는 사각형,삼각형,원이다.
+
+-실습 
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Point {
+	int x, y;
+public:
+	void set(int x, int y) { this->x = x; this->y = y; }
+	void showPoint() {
+		cout << "(" << "," << ")" << endl;
+	}
+};
+
+class ColorPoint : public Point { 
+
+		string color;
+public:
+	void setColor(string color) { this->color = color; }
+	void showColorPoint();
+};
+void ColorPoint::showColorPoint() {
+	cout << color << ":";
+	showPoint(); 
+}
+int main() {
+	Point p; 
+	ColorPoint cp; 
+	cp.set(3, 4); 
+	cp.setColor("Red"); 
+	cp.showColorPoint(); 
+}
+
+-실행결과
+
+Red:(3,4)
+
+
+
+
+
+
+상속과 객체 포인터 
+ -업 캐스팅: 파생 클래스 포인터가 기본 클래스 포인터에 치환되는 것 (자식에서 부모 클래스로)
+
+-다운 캐스팅 : 기본 클래스의 포인터가 파생 클래스의 포인터에 치환되는 것(부모에서 자식 클래스로)
+
+Protected 접근 지정 
+protected 멤버
+-선언된 클래스에서 접근 가능
+-파생 클래스에서만 접근 허용 
+-파생 클래스가 아닌 다른 클래스나 외부 함수에서는 protected 멤버를 접근할 수 없다
+
+
+
+
+예제 - 8-2
+1: 오류 X  - x,y 는 protected 멤버이므로
+2: 오류 X set함수가 Point의 public 멤버이므로
+3,4,5,6, : 오류 O protected 멤버로 선언된 x,y를 접근하기 때문이다.
+7: 오류 X
+
+
+예제 8-4
+
+1: 오류 O- a는 derived 클래스에 상속되지만 private 멤버이므로 접근 불가
+2,3: 오류 O - setA() showA()는 private 멤버로 변경되어 Derived 클래스에 상속되기 때문
+4: 오류O - b는 private 멤버이기 때문에 Derived 클래스 외부에서 접근 불가
+5:오류O - setB()는 protected 멤버이기 때문
+6:오류X
+
+예제 8-5
+1,2,3,4,5,(오류 O)
+1- a는 Derived 클래스에 상속되지만 private 멤버
+2,3- setA() showA()는 private 멤버로 변경되어 Derived 클래스에 상속되기 때문
+4-b는 private 멤버이기 때문에 Derived 클래스 외부에서 접근 불가
+5-setB()는 protected 멤버이기 때문
+
+예제 8-6
+
+3,4, 오류O
+3:setA()는 private 속성으로 변경되어 Derived 클래스에 상속되기 때문에
+4:shoA()는 private 속성이로 변경되어 Derived 클래스에 상속되기 때문에
+
+가상 상속
+-다중 상속으로 인한 기본 클래스 멤버의 중복 상속 해결
+-파생 클래스의 선언문에서 기본 클래스 앞에 virtual로 선언
+-파생 클래스의 객체가 생성될 때 기본 클래스의 멤버는 오직 한
+번만 생성
