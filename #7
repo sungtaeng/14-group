@@ -1,0 +1,303 @@
+# 14-group
+10장
+-제네릭(generic) 또는 일반화
+ 함수나 클래스를 일반화시키고, 매개 변수 타입을 지정하여 틀에서 찍어 내듯이
+함수나 클래스 코드를 생산하는 기법
+
+-템플릿
+ 함수나 클래스를 일반화하는 C++ 도구
+ template 키워드로 함수나 클래스 선언
+ -변수나 매개 변수의 타입만 다르고, 코드 부분이 동일한 함수를 일반화시킴
+ 제네릭 타입 - 일반화를 위한 데이터 타입
+
+예제 10-1
+#include<iostream>
+using namespace std;
+
+class Circle {
+	int radius;
+public:
+	Circle(int radius = 1) { this->radius = radius; }
+	int getRadius() { return radius; }
+};
+
+template <class T>
+void myswap(T& a, T& b) {
+	T tmp;
+	tmp = a;
+	a = b;
+	b = tmp;
+
+}
+
+int main() {
+	int a = 4, b = 5;
+	myswap(a, b);
+	cout << "a=" << a << "," << "b=" << b << endl;
+
+	double c = 0.3, d = 12.5;
+	myswap(a, b);
+	cout << "c" << c << "," << "d=" << d << endl;
+
+	Circle donut(5), pizze(20);
+	myswap(donut, pizza);
+	cout << "donut반지름=" << donut.getRadius() << ", ";
+	cout << "pizza반지름=" << pizza.getRadius() << endl;
+}
+ = b;
+b = tmp;
+}
+
+
+템플릿 장점
+- 함수 코드의 재사용
+-높은 소프트웨어의 생산성과 유용성
+
+템플릿의 단점
+ - 포팅에 취약
+-컴파일러에 따라 지원하지 않을 수 있음.
+-컴파일 오류 메세지 빈약,디버깅에 많은 어려움
+
+
+예제 10-4
+두 개의 배열을 매개 변수로 받아 배열을 복사하는 제네릭 mcopy()함수를 작성하라.
+
+#include <iostream>
+using namespace std;
+// 두 개의 제네릭 타입 T1, T2를 가지는 copy()의 템플릿
+template <class T1, class T2>
+void mcopy(T1 src [], T2 dest [], int n) { // src[]의 n개 원소를 dest[]에 복사하는 함수
+for(int i=0; i<n; i++)
+dest[i] = (T2)src[i]; // T1 타입의 값을 T2 타입으로 변환한다.
+}
+int main() {
+int x[] = {1,2,3,4,5};
+double d[5];
+char c[5] = {'H', 'e', 'l', 'l', 'o'}, e[5];
+mcopy(x, d, 5); // int x[]의 원소 5개를 double d[]에 복사
+mcopy(c, e, 5); // char c[]의 원소 5개를 char e[]에 복사
+for(int i=0; i<5; i++) cout << d[i] << ' '; // d[] 출력
+cout << endl;
+for(int i=0; i<5; i++) cout << e[i] << ' '; // e[] 출력
+
+cout<<endl;
+}
+
+
+하지만 이 코드에 문제가 발생
+-char로 구체화되면 숫자대신 문자가 출력되는 문제가 발생한다.
+
+
+*제네릭 클래스 선언 
+template <class T>
+class MyStack {
+int tos;
+T data [100]; // T 타입의 배열
+public:
+MyStack();
+void push(T element);
+T pop();
+};
+
+*제네릭 클래스 구현
+template <class T>
+void MyStack<T>::push(T element) {
+...
+}
+template <class T> T MyStack<T>::pop() {
+...
+}
+
+
+예제 10-6
+(제네릭 스택 클래스 만들기)
+
+#include <iostream>
+using namespace std;
+template <class T>
+class MyStack {
+int tos;// top of stack
+T data [100]; // T 타입의 배열. 스택의 크기는 100
+public:
+MyStack();
+void push(T element); // element를 data [] 배열에 삽입
+T pop(); // 스택의 탑에 있는 데이터를 data[] 배열에서 리턴
+};
+template <class T>
+MyStack<T>::MyStack() { // 생성자
+tos = -1; // 스택은 비어 있음
+}
+template <class T>
+void MyStack<T>::push(T element) {
+if(tos == 99) {
+cout << "stack full";
+return;
+}
+tos++;
+data[tos] = element;
+}
+template <class T>
+T MyStack<T>::pop() {
+T retData;
+if(tos == -1) {
+cout << "stack empty";
+return 0; // 오류 표시
+}
+retData = data[tos--];
+return retData;
+}
+int main() {
+MyStack<int> iStack; // int 만 저장하는 스택
+iStack.push(3);
+cout << iStack.pop() << endl;
+MyStack<double> dStack; // double 만 저장하는 스택
+dStack.push(3.5);
+cout << dStack.pop() << endl;
+MyStack<char> *p = new MyStack<char>(); // char만 저장하는 스택
+p->push('a');
+cout << p->pop() << endl;
+delete p;
+}
+
+
+<실행 결과>
+
+3
+3.5
+a
+
+10-8(두 개의 제네릭 타임을 가진 클래스 만들기)
+#include <iostream>
+using namespace std;
+template <class T1, class T2> // 두 개의 제네릭 타입 선언
+class GClass {
+T1 data1;
+T2 data2;
+public:
+GClass();
+void set(T1 a, T2 b);
+void get(T1 &a, T2 &b);
+};
+template <class T1, class T2>
+GClass<T1, T2>::GClass() {
+data1 = 0; data2 = 0;
+}
+template <class T1, class T2>
+void GClass<T1, T2>::set(T1 a, T2 b) {
+data1 = a; data2 = b;
+}
+template <class T1, class T2>
+void GClass<T1, T2>::get(T1 & a, T2 & b) {
+a = data1; b = data2;
+}
+int main() {
+int a;
+double b;
+GClass<int, double> x;
+x.set(2, 0.5);
+x.get(a, b);
+cout << "a=" << a << '\t' << "b=" << b << endl;
+char c;
+float d;
+GClass<char, float> y;
+y.set('m', 12.5);
+y.get(c, d);
+cout << "c=" << c << '\t' << "d=" << d << endl;
+}
+
+<실행 결과>
+
+a=2 b=0.5
+c=m d=12.5
+
+
+C++ 표준 템플릿 라이브러리 STL
+
+STL:표준 템플릿 라이브러리
+-많은 제네릭 클래스와 제네릭 함수 포함
+STL구성
+-컨테이너
+-iterator
+-알고리즘
+
+STL특징 
+-가변 길이 배열을 구현한 제네릭 클래스
+-원소의 저장,삭제,검색 등 다양한 멤버 함수 지원
+-벡터에 저장된 원소는 인덱스로 접근 가능
+
+
+iterator란?
+-반복자라고도 부름
+-컨테이너의 원소를 가리키는 포인터
+
+iterator변수 선언
+-구체적인 컨테이너를 지정하여 반복자 변수 생성
+
+
+vector<int>::iterator it;
+it = v.begin();//주소값 리턴(첫번째 주소 알려주기)
+
+*interator 자체가 포인터
+
+
+
+예제 10-11 iterator 를 사용하여 vector의 모든 원소에 2 곱하기 (반드시 익혀야함 시험 출제**
+
+#include <iostream>
+#include <vector>
+using namespace std;
+int main() {
+	vector<int> v;
+	v.push_back(1);
+	v.push_back(2);
+	v.push_back(3);
+
+vector<int>::iterator it; 
+	for (it = v.begin(); it != v.end(); it++) { 
+		int n = *it; 
+		n = n * 2; 
+		*it = n; 
+	}
+	for (it = v.begin(); it != v.end(); it++) 
+		cout << *it << ' ';
+	cout << endl;
+}
+
+
+
+**map 컨테이너 **
+
+특징
+-('키','값')의 쌍을 원소로 저장하는 제네릭 컨테이너
+-'키' 로 '값' 검색
+
+**STL 알고리즘 사용하기**
+
+*알고리즘 함수
+-템플릿 함수
+-전역 함수
+-interator와 함께 작동
+*Sor()함수 사례
+-첫 번째 매개 변수:소팅을 시작한 원소의 주소
+-두 버째 매개 변수: 소팅을 범위의 마지막 원소 다음 주소 
+
+C++에서 auto
+
+기능: 지역 변수를 선언하는 키워드(전에는)
+이제는 선언문에서 추론하여 타입을 자동 선언
+
+장점: 긴 타입 선언 시 오타 줄임
+
+함수의 리턴 타입으로부터 추론하여 변수 타입 선언
+
+int square(int x) { return x*x; }
+...
+auto ret = square(3); // 변수 ret는 int 타입으로 추론
+
+STL에서 유용하게 사용되는 auto
+
+
+타입을 몰라도 auto 를 사용하면 알아서 추론하여 타입을 선언해줌
+
+
+람다는 X
