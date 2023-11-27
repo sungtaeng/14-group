@@ -1,0 +1,267 @@
+
+C++ 입출력 스트림 버퍼
+*키 입력 스트림의 버퍼
+
+*목적
+-입력장치로부터 입력된 데이터를 프로그램으로 전달하기 전에 일시 저장
+
+-키 입력 도중 수정 가능
+
+스크린 출력 스트림 버퍼
+
+*목적
+-프로그램에서 출력된 데이터를 출력 장치로 보내기 전에 일시 저장
+-출력 장치를 반복적으로 사용하는 비효율성 개선
+
+
+
+입출력 방식 2가지
+**스트림 입출력 방식(stream I/O)
+-스트림 버퍼를 이용한 입출력 방식
+-입력된 키는 버퍼에 저장
+<Enter>키가 입력되면 프로그램이 버퍼에서 읽어가는 방식
+-출력되는 데이터는 일차적으로 스트림 버퍼에 저장
+
+**저 수준 입출력 방식
+
+
+-키가 입력되는 즉시 프로그램에게 키 값 전달
+-<Backspace>키 그 자체도 프로그램에게 바로 전달
+-게임 등 키 입력이 즉각적으로 필요한 곳에 사용
+-프로그램이 출력하는 즉시 출력 장치에 출력
+-컴파일러마다 다른 라이브러리나 API 지원
+
+예제 11-1 문자 출력(잠깨기용)
+
+
+#include <iostream>
+using namespace std;
+
+int main() {
+	// "Hi!"를 출력하고 다음 줄로 넘어간다.
+	cout.put('H');
+	cout.put('i');
+	cout.put(33); 
+	cout.put('\n');
+	
+	// "C++ "을 출력한다.
+	cout.put('C').put('+').put('+').put(' ');
+
+	char str[]="I love programming";
+	cout.write(str, 6); //  str 배열의 6 개의 문자 "I love"를 스트림에 출력
+}
+
+
+
+
+
+
+
+
+
+11-2 get()과 get(char&)을 이용한 한 줄의 문자 읽기
+
+
+#include<iostream>
+using namespace std;
+
+void get1(){
+	cout << "cin.get()로 <Enter>키 까지 입력 받고 출력합니다>>";
+int ch;
+while (ch = cin.get())!= EOF){
+	cout.put(ch);
+	if (ch == '\n')
+		break;
+	}
+}
+void get2() {
+	cout << "cin.get(char&)로 <Enter> 키까지 입력 받고 출력합니다>>";
+	char ch;
+	while (true) {
+		cin.get(ch);
+		if (cin.eof()) break; 
+		cout.put(ch); 
+		if (ch == '\n')
+			break;
+	}
+}
+
+
+
+int main() {
+	get1(); 
+	get2(); 
+}
+
+
+**한줄 읽기
+
+istream&getline(char*s,int n ,char delim='|n')
+get()과 동일,하지만 delim에 지정된 구분 문자를 스트림에서 제거
+
+
+**포맷 입출력
+
+C++에서도 입출력시 포맷 지정 가능
+
+포맷 입출력 3가지 방법
+-포맷 플래그
+-포맷 함수
+-조작자
+
+**조작자
+-manipulator, 스트림 조작자(stream manipulator)
+*조작자는 함수
+-C++ 표준 라이브러리에 구현된 조작자 : 입출력 포맷 지정 목적
+-개발자 만의 조작자 작성 가능 : 다양한 목적
+-매개 변수 없는 조작자와 매개 변수를 가진 조작자로 구분
+**조작자는 항상 << 나 >> 연산자와 함께 사용됨
+
+예제 11-8 번(매개 변수를 가진 조작자 사용)
+
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+	cout << showbase;
+	
+
+	cout << setw(8) << "Number";
+	cout << setw(10) << "Octal";
+	cout << setw(10) << "Hexa" << endl;
+
+
+for(int i=0; i<50; i+=5) { 
+		cout << setw(8)<< setfill('.') << dec << i; 
+		cout << setw(10) << setfill(' ') << oct << i; 
+		cout << setw(10) << setfill(' ') << hex << i << endl; 
+	}
+}
+
+
+
+
+*삽입 연산자(<<)
+insertion operator, 삽입자라고도 부름
+<< 연산자는 C++의 기본 연산자 : 정수 시프트 연산자
+
+**개발자가 작성한 클래스의 객체를 << 연산자로 출력
+
+예제 11-9(Point 객체를 스트림에 출력하는 <<연산자 작성
+
+
+class Point { 
+	int x, y; 
+public:
+	Point(int x = 0, int y = 0) {
+		this->x = x;
+		this->y = y;
+	}
+	friend ostream& operator << (ostream& stream, Point a);
+};
+
+
+ostream& operator << (ostream& stream, Point a) {
+	stream << "(" << a.x << "," << a.y << ")";
+	return stream;
+}
+
+int main() {
+	Point p(3, 4); 
+	cout << p << endl; 
+
+	Point q(1, 100), r(2, 200); 
+	cout << q << r << endl; 
+}
+
+실행결과
+(3,4)
+(1,100)(2,200)
+
+
+**추출 연산자
+
+-extraction operator
+>> 연산자는 C++의 기본 연산자 : 정수 시프트 연산자
+
+예제 11-11 (point 객체를 입력 받는 >>연산자 작성)
+#include <iostream>
+using namespace std;
+
+class Point { // 한 점을 표현하는 클래스
+	int x, y; // private 멤버
+public:	
+	Point(int x=0, int y=0) {
+		this->x = x; 
+		this->y = y;
+	}
+	friend istream& operator >> (istream& ins, Point &a); // friend 선언
+	friend ostream& operator << (ostream& stream, Point a); // friend 선언
+};
+
+istream& operator >> (istream& ins, Point &a) { // >> 연산자 함수
+	cout << "x 좌표>>";
+	ins >> a.x;
+	cout << "y 좌표>>";
+	ins >> a.y;
+	return ins;
+}
+
+ostream& operator << (ostream& stream, Point a) { // << 연산자 함수
+	stream << "(" << a.x << "," << a.y << ")";
+	return stream;
+}
+
+int main() {
+	Point p; // Point 객체 생성
+	cin >> p;  // >> 연산자 호출하여 x 좌표와 y 좌표를 키보드로 읽어 객체 p 완성
+	cout << p;  // << 연산자 호출하여 객체 p 출력
+}
+
+
+실행결과
+X 좌표 >>100
+y 좌표 >>200
+(100,200)
+
+**매개 변수 없는 조작자의 경우
+
+istream&manipulatorFunctioon(istream&ins)
+입력 스트림에 사용되는 조작자 원형
+ostream&manipulatorFunctioon(ostream&outs)
+출력 스트림에 사용되는 조작자 원형
+
+
+11-12 (사용자 정의 조작자 만들기)
+
+#include <iostream>
+using namespace std;
+
+ostream& fivestar(ostream& outs) {
+	return outs << "*****";
+}
+
+ostream& rightarrow(ostream& outs) {
+	return outs << "---->";
+}
+
+ostream& beep(ostream& outs) {
+	return outs << '\a'; // 시스템 beep(삑 소리) 발생
+}
+
+int main() {
+	cout << "벨이 울립니다" << beep << endl;
+	cout << "C" << rightarrow << "C++" << rightarrow << "Java" << endl;
+	cout << "Visual" << fivestar << "C++" << endl;	
+}
+
+실행 결과
+벨이 울립니다
+C---->C++---->Java
+Visual*****C++
+
+
+밑에 int main 만 돌리면 정의 되지않은 조작자 이므로 오류가 나겠지만 위에 사용자 정의 조작자를 만들어 오류가 안남.
+
+
