@@ -1,0 +1,118 @@
+텍스트 파일
+ 사람들이 사용하는 글자 혹은 문자들로만 구성되는 파일
+◼ 알파벳, 한글, 숫자, % # @ < ? 등의 기호 문자
+ '\n', '\t' 등의 특수 문자도 포함
+ 각 문자마다 문자 코드(이진수) 할당
+◼ ASCII 코드, 유니코드
+ 텍스트 파일의 종류
+◼ txt 파일, HTML 파일, XML 파일, C++ 소스 파일, C 소스 파일, 자바 소스 파일
+ 텍스트 파일과 <Enter> 키
+ <Enter>키를 입력하면 텍스트 파일에는 ‘\r’, ‘\n’의 두 코드가 기록됨
+
+
+바이너리 파일이란?
+ 문자로 표현되지 않는 바이너리 데이터가 기록된 파일
+◼ 이미지, 오디오, 그래픽, 컴파일된 코드는 문자로 표현되지 않음
+ 텍스트 파일의 각 바이트 -> 문자로 해석
+ 바이너리 파일의 각 바이트 -> 문자로 해석되지 않는 것도 있음
+◼ 각 바이트의 의미는 파일을 만든 응용프로그램 만이 해석 가능
+ 바이너리 파일의 종류
+◼ jpeg, bmp 등의 이미지 파일
+◼ mp3 등의 오디오 파일
+◼ hwp, doc, ppt 등의 확장자를 가진 멀티미디어 문서 파일
+◼ obj, exe 등의 확장자를 가진 컴파일된 코드나 실행 파일
+
+C++파일 입출력 라이브러리 사용
+-<fstream>헤더 파일과 std 이름 공간의 선언 필요
+
+
+
+파일 입출력 방식
+- 텍스트 I/O와 바이너리 I/O의 두 방식
+- C++ 파일 입출력 클래스(ifstream, ofstream, fstream)는 두 방식
+지원
+** 텍스트 I/O
+- 문자 단위로 파일에 쓰기, 파일에서 읽기
+- 문자를 기록하고, 읽은 바이트를 문자로 해석
+- 텍스트 파일에만 적용
+** 바이너리 I/O
+- 바이트 단위로 파일에 쓰기, 파일에서 읽기
+- 데이터를 문자로 해석하지 않고 있는 그대로 기록하거나 읽음
+- 텍스트 파일과 바이너리 파일 모두 입출력 가능
+** 텍스트 I/O와 바이너리 I/O 입출력 시 차이점
+- 개형 문자(‘\n’)를 다루는데 있음
+
+
+예제 12-1 키보드로 입력 받아 텍스트 파일 저장하기
+
+#include <iostream>
+#include <fstream>
+using namespace std;
+int main() {
+char name[10], dept[20];
+int sid;
+// 키보드로부터 읽기
+cout << "이름>>";
+cin >> name; // 키보드에서 이름 입력 받음
+cout << "학번>>";
+cin >> sid; // 키보드에서 학번 입력 받음
+cout << "학과>>";
+cin >> dept; // 키보드에서 학과 입력 받음
+// 파일 열기. student.txt 파일을 열고, 출력 스트림 생성
+ofstream fout("c:\\temp\\student.txt");
+if(!fout) { // 열기 실패 검사
+cout << “c:\\temp\\student.txt 파일을 열 수 없다";
+return 0;
+}
+// 파일 쓰기
+fout << name << endl; // name 쓰기
+fout << sid << endl; // sid 쓰기
+fout << dept << endl; // dept 쓰기
+fout.close(); // 파일 닫기
+}
+
+실행결과= kitae
+20131111
+computer
+
+
+
+파일 모드란?
+- 파일 입출력에 대한 구체적인 작업 행태에 대한 지정
+ 사례)
+- 파일에서 읽을 작업을 할 것인지, 쓰기 작업을 할 것인지
+-기존 파일의 데이터를 모두 지우고 쓸 것인지, 파일의 끝 부분에 쓸 것인지
+- 텍스트 I/O 방식인지 바이너리 I/O 방식 인지
+
+12-9 read()/write()로 이미지 파일 복사
+
+
+#include <iostream>
+#include <fstream>
+using namespace std;
+int main() {
+const char* srcFile = "c:\\temp\\tulips.jpg";
+const char* destFile = "c:\\temp\\copytulips.jpg";
+ifstream fsrc(srcFile, ios::in | ios::binary);
+if(!fsrc) { // 열기 실패 검사
+cout << srcFile << " 열기 오류" << endl;
+return 0;
+}
+ofstream fdest(destFile, ios::out | ios::binary);
+if(!fdest) { // 열기 실패 검사
+cout << destFile << " 열기 오류" << endl;
+return 0;
+}
+// 소스 파일에서 목적 파일로 복사하기
+char buf[1024];
+while(!fsrc.eof()) { // 파일 끝까지 읽는다.
+fsrc.read(buf, 1024); // 최대 1024 바이트를 읽어 배열 s에 저장
+int n = fsrc.gcount(); // 실제 읽은 바이트 수 알아냄
+fdest.write(buf, n); // 읽은 바이트 수 만큼 버퍼에서 목적 파일에 기록
+}
+cout << srcFile << "을 " << destFile << "로 복사 완료" << endl;
+fsrc.close();
+fdest.close();
+}
+
+12.7 36페이지 까지
